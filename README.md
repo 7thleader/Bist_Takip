@@ -1,5 +1,9 @@
 # Bist_Takip
-Python kullanarak Borsa İstanbul hisselerini takip edebileceğimiz bir program geliştirdim.Anasayfada en çok işlem gören hisselerin yanısıra sağ panelde günün en çok yükselen ve en çok düşen hisselerini görebilirsiniz.Bunlara ek olarak istediğiniz iki hisseyi karşılaştırabileceğiniz karşılaştırma modu da mevcut.
+Python kullanarak Borsa İstanbul hisselerini takip edebileceğimiz bir program geliştirdim.Bunu yaparken Yahoo Finance Api'ını kullandım.Anasayfada en çok işlem gören hisselerin yanısıra sağ panelde günün en çok yükselen ve en çok düşen hisselerini görebilirsiniz.Bunlara ek olarak istediğiniz iki hisseyi karşılaştırabileceğiniz karşılaştırma modu da mevcut.
+
+I developed a program using Python to track stocks on the Borsa Istanbul. For this, I utilized the Yahoo Finance API. On the main page, you can see the most actively traded stocks, while the right panel displays the top gainers and losers of the day. Additionally, there's a comparison mode where you can compare any two stocks of your choice.
+
+
 BIST Piyasa Takip Uygulaması - Kurulum ve Çalıştırma Kılavuzu
 =================================================
 BIST Market Tracking Application - Installation and Usage Guide
