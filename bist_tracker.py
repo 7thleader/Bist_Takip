@@ -11,8 +11,7 @@ try:
     print("Tüm modüller başarıyla yüklendi.")
     
     matplotlib.use('TkAgg')
-    
-    # Tema ayarları
+
     ctk.set_appearance_mode("dark")
     ctk.set_default_color_theme("blue")
     
@@ -31,13 +30,11 @@ try:
             self.columns = columns
             self.cells = []
             self.on_row_click = on_row_click
-            self.last_click_time = 0  # Son tıklama zamanı
-            
-            # Create scrollable frame
+            self.last_click_time = 0 
+        
             self.scroll_frame = ScrollableFrame(self)
             self.scroll_frame.pack(fill="both", expand=True)
             
-            # Create header row if headers are provided
             if headers:
                 header_row = []
                 for col, header in enumerate(headers):
@@ -47,20 +44,16 @@ try:
                     header_row.append(label)
                     self.scroll_frame.grid_columnconfigure(col, weight=1)
             
-            # Create data cells
             for row in range(rows):
                 row_cells = []
-                # Create a frame for each row
                 row_frame = ctk.CTkFrame(self.scroll_frame, fg_color="transparent")
                 row_frame.grid(row=row + (1 if headers else 0), column=0,
                              columnspan=columns, padx=5, pady=3, sticky="nsew")
                 
-                # Bar frame that will show the background color
                 bar_frame = ctk.CTkFrame(row_frame, fg_color="#2b2b2b",
                                        corner_radius=6)
                 bar_frame.pack(fill="both", expand=True, padx=0, pady=0)
                 
-                # Grid for cells within the bar
                 bar_frame.grid_columnconfigure((0,1,2,3,4,5), weight=1)
                 
                 for col in range(columns):
@@ -85,7 +78,6 @@ try:
                 cells, bar_frame = self.cells[row]
                 cells[col].configure(text=value)
                 
-                # If this is the change percentage column (col 2), update bar color
                 if col == 2 and value:
                     try:
                         change = float(value.replace('%', ''))
@@ -104,7 +96,6 @@ try:
             self.title(f"{symbol} Hisse Analizi")
             self.geometry("1000x800")
             
-            # Hisse bilgisi
             self.symbol = symbol
             self.stock = yf.Ticker(f"{symbol}.IS")
             self.selected_range = ctk.StringVar(value="1y")
@@ -112,21 +103,17 @@ try:
             self.create_widgets()
             
         def create_widgets(self):
-            # Ana container
             container = ctk.CTkFrame(self)
             container.pack(fill="both", expand=True, padx=20, pady=20)
             
-            # Üst panel
             top_frame = ctk.CTkFrame(container)
             top_frame.pack(fill="x", pady=(0, 20))
             
-            # Başlık ve şirket adı
             info = self.stock.info
             company_name = info.get('longName', self.symbol)
             ctk.CTkLabel(top_frame, text=f"{self.symbol} - {company_name}",
                         font=("Segoe UI", 24, "bold")).pack(side="left")
             
-            # Fiyat ve değişim
             price_frame = ctk.CTkFrame(top_frame)
             price_frame.pack(side="right")
             
@@ -145,7 +132,6 @@ try:
                         font=("Segoe UI", 18, "bold"),
                         text_color=change_color).pack(side="left")
             
-            # Grafik kontrolleri
             controls_frame = ctk.CTkFrame(container)
             controls_frame.pack(fill="x", pady=(0, 10))
             
@@ -163,7 +149,6 @@ try:
                                  variable=self.selected_range,
                                  command=self.update_chart).pack(side="left", padx=10)
             
-            # Grafik alanı
             chart_frame = ctk.CTkFrame(container)
             chart_frame.pack(fill="both", expand=True, pady=10)
             
@@ -174,11 +159,9 @@ try:
             self.canvas = FigureCanvasTkAgg(self.fig, master=chart_frame)
             self.canvas.get_tk_widget().pack(fill="both", expand=True)
             
-            # Alt panel - Detaylı bilgiler
             details_frame = ctk.CTkFrame(container)
             details_frame.pack(fill="x", pady=20)
             
-            # Sol detaylar
             left_details = ctk.CTkFrame(details_frame)
             left_details.pack(side="left", fill="both", expand=True, padx=(0, 10))
             
@@ -214,7 +197,6 @@ try:
                 ctk.CTkLabel(row_frame, text=formatted_value,
                             font=("Segoe UI", 12, "bold")).pack(side="right")
             
-            # Sağ detaylar
             right_details = ctk.CTkFrame(details_frame)
             right_details.pack(side="right", fill="both", expand=True, padx=(10, 0))
             
@@ -302,13 +284,11 @@ try:
             self.title("Hisse Karşılaştırma")
             self.geometry("1200x800")
             
-            # Hisse sembolleri
             self.symbol1 = symbol1
             self.symbol2 = symbol2
             self.stock1 = None
             self.stock2 = None
             
-            # Mevcut hisse listesi
             self.available_stocks = [
                 'AKBNK', 'ARCLK', 'ASELS', 'BIMAS', 'EKGYO', 
                 'EREGL', 'GARAN', 'HEKTS', 'ISCTR', 'KCHOL',
@@ -319,15 +299,12 @@ try:
             
             self.selected_range = ctk.StringVar(value="1y")
             
-            # Seçili hisseler için değişkenler
             self.stock1_var = ctk.StringVar(value=symbol1 if symbol1 else "")
             self.stock2_var = ctk.StringVar(value=symbol2 if symbol2 else "")
             
-            # Arama değişkenleri
             self.search1_var = ctk.StringVar()
             self.search2_var = ctk.StringVar()
             
-            # Filtrelenmiş listeler
             self.filtered_stocks1 = []
             self.filtered_stocks2 = []
             
@@ -337,71 +314,58 @@ try:
                 self.load_stocks()
         
         def create_widgets(self):
-            # Ana container
             container = ctk.CTkFrame(self)
             container.pack(fill="both", expand=True, padx=20, pady=20)
             
-            # Üst panel - Hisse seçimi
             top_frame = ctk.CTkFrame(container)
             top_frame.pack(fill="x", pady=(0, 20))
             
-            # Hisse 1 seçimi
             stock1_frame = ctk.CTkFrame(top_frame)
             stock1_frame.pack(side="left", fill="x", expand=True, padx=(0, 10))
             
             ctk.CTkLabel(stock1_frame, text="1. Hisse:",
                         font=("Segoe UI", 12)).pack(side="left", padx=5)
             
-            # Arama kutusu 1
             self.search1_entry = ctk.CTkEntry(stock1_frame, 
                                             textvariable=self.search1_var,
                                             width=120,
                                             placeholder_text="Hisse Ara...")
             self.search1_entry.pack(side="left", padx=5)
             
-            # Seçili hisse 1
             self.selected1_label = ctk.CTkLabel(stock1_frame, 
                                               textvariable=self.stock1_var,
                                               font=("Segoe UI", 12, "bold"))
             self.selected1_label.pack(side="left", padx=10)
             
-            # Hisse listesi 1
             self.stocks1_frame = ctk.CTkFrame(stock1_frame)
             self.stocks1_frame.pack(side="left", padx=5)
             
-            # Hisse 2 seçimi
             stock2_frame = ctk.CTkFrame(top_frame)
             stock2_frame.pack(side="left", fill="x", expand=True, padx=(10, 0))
             
             ctk.CTkLabel(stock2_frame, text="2. Hisse:",
                         font=("Segoe UI", 12)).pack(side="left", padx=5)
             
-            # Arama kutusu 2
             self.search2_entry = ctk.CTkEntry(stock2_frame, 
                                             textvariable=self.search2_var,
                                             width=120,
                                             placeholder_text="Hisse Ara...")
             self.search2_entry.pack(side="left", padx=5)
             
-            # Seçili hisse 2
             self.selected2_label = ctk.CTkLabel(stock2_frame, 
                                               textvariable=self.stock2_var,
                                               font=("Segoe UI", 12, "bold"))
             self.selected2_label.pack(side="left", padx=10)
             
-            # Hisse listesi 2
             self.stocks2_frame = ctk.CTkFrame(stock2_frame)
             self.stocks2_frame.pack(side="left", padx=5)
             
-            # Karşılaştır butonu
             ctk.CTkButton(top_frame, text="Karşılaştır",
                          command=self.load_stocks).pack(side="right", padx=20)
             
-            # Arama olaylarını bağla
             self.search1_var.trace_add("write", lambda *args: self.filter_stocks(1))
             self.search2_var.trace_add("write", lambda *args: self.filter_stocks(2))
             
-            # Grafik kontrolleri
             controls_frame = ctk.CTkFrame(container)
             controls_frame.pack(fill="x", pady=(0, 10))
             
@@ -419,15 +383,12 @@ try:
                                  variable=self.selected_range,
                                  command=self.update_charts).pack(side="left", padx=10)
             
-            # Ana içerik - iki sütunlu layout
             content_frame = ctk.CTkFrame(container)
             content_frame.pack(fill="both", expand=True)
             
-            # Sol panel - Hisse 1
             self.left_frame = ctk.CTkFrame(content_frame)
             self.left_frame.pack(side="left", fill="both", expand=True, padx=(0, 10))
             
-            # Sağ panel - Hisse 2
             self.right_frame = ctk.CTkFrame(content_frame)
             self.right_frame.pack(side="right", fill="both", expand=True, padx=(10, 0))
         
@@ -436,7 +397,6 @@ try:
             stocks_frame = self.stocks1_frame if search_box == 1 else self.stocks2_frame
             stock_var = self.stock1_var if search_box == 1 else self.stock2_var
             
-            # Mevcut butonları temizle
             for widget in stocks_frame.winfo_children():
                 widget.destroy()
             
@@ -444,11 +404,9 @@ try:
             if not search_term:
                 return
             
-            # Hisseleri filtrele
             filtered = [stock for stock in self.available_stocks 
                        if search_term in stock]
             
-            # En fazla 5 sonuç göster
             for stock in filtered[:5]:
                 btn = ctk.CTkButton(stocks_frame, text=stock,
                                   width=70, height=25,
@@ -467,7 +425,6 @@ try:
                 for widget in self.stocks2_frame.winfo_children():
                     widget.destroy()
             
-            # Eğer her iki hisse de seçiliyse otomatik karşılaştır
             if self.stock1_var.get() and self.stock2_var.get():
                 self.load_stocks()
         
@@ -479,13 +436,11 @@ try:
                 return
             
             try:
-                # Hisseleri yükle
                 self.symbol1 = symbol1
                 self.symbol2 = symbol2
                 self.stock1 = yf.Ticker(f"{symbol1}.IS")
                 self.stock2 = yf.Ticker(f"{symbol2}.IS")
                 
-                # Grafikleri ve detayları güncelle
                 self.update_charts()
                 self.update_details()
                 
@@ -495,20 +450,17 @@ try:
         
         def update_charts(self):
             try:
-                # Önce mevcut frame'leri temizle
                 for widget in self.left_frame.winfo_children():
                     widget.destroy()
                 for widget in self.right_frame.winfo_children():
                     widget.destroy()
                 
-                # Sol grafik
                 fig1 = Figure(figsize=(6, 4), facecolor='#2b2b2b')
                 ax1 = fig1.add_subplot(111)
                 ax1.set_facecolor('#2b2b2b')
                 
                 hist1 = self.stock1.history(period=self.selected_range.get())
                 if not hist1.empty:
-                    # Fiyatları normalize et
                     normalized1 = hist1['Close'] / hist1['Close'].iloc[0] * 100
                     ax1.plot(hist1.index, normalized1, color='#3498db', linewidth=2,
                             label=self.symbol1)
@@ -527,19 +479,16 @@ try:
                 canvas1.draw()
                 canvas1.get_tk_widget().pack(fill="both", expand=True)
                 
-                # Sağ grafik
                 fig2 = Figure(figsize=(6, 4), facecolor='#2b2b2b')
                 ax2 = fig2.add_subplot(111)
                 ax2.set_facecolor('#2b2b2b')
                 
                 hist2 = self.stock2.history(period=self.selected_range.get())
                 if not hist2.empty:
-                    # Fiyatları normalize et
                     normalized2 = hist2['Close'] / hist2['Close'].iloc[0] * 100
                     ax2.plot(hist2.index, normalized2, color='#e74c3c', linewidth=2,
                             label=self.symbol2)
                     
-                    # İki hisseyi aynı grafikte göster
                     ax2.plot(hist1.index, normalized1, color='#3498db', linewidth=2,
                             label=self.symbol1)
                     
@@ -557,7 +506,6 @@ try:
                 canvas2.draw()
                 canvas2.get_tk_widget().pack(fill="both", expand=True)
                 
-                # Detayları güncelle
                 self.update_details()
                 
             except Exception as e:
@@ -566,14 +514,12 @@ try:
         
         def update_details(self):
             try:
-                # Sol panel detayları
                 details_frame1 = ctk.CTkFrame(self.left_frame)
                 details_frame1.pack(fill="x", pady=10, side="bottom")
                 
                 info1 = self.stock1.info
                 self.create_info_table(details_frame1, info1, self.symbol1)
                 
-                # Sağ panel detayları
                 details_frame2 = ctk.CTkFrame(self.right_frame)
                 details_frame2.pack(fill="x", pady=10, side="bottom")
                 
@@ -585,11 +531,9 @@ try:
                 traceback.print_exc()
         
         def create_info_table(self, parent, info, symbol):
-            # Başlık
             ctk.CTkLabel(parent, text=f"{symbol} Detayları",
                         font=("Segoe UI", 16, "bold")).pack(pady=5)
             
-            # Temel veriler
             metrics = [
                 ("Fiyat", 'currentPrice', "₺"),
                 ("Değişim", 'regularMarketChangePercent', "%"),
@@ -632,16 +576,13 @@ try:
             self.title("BIST Piyasa Takip")
             self.geometry("1200x800")
             
-            # Veri önbelleği ve zamanlama
             self.cached_data = []
             self.last_update = None
             self.update_interval = 30
             self.is_updating = False
             
-            # Analiz penceresi referansı
             self.analysis_window = None
             
-            # Hisse listesi
             self.bist_tickers = [
                 'AKBNK.IS', 'ARCLK.IS', 'ASELS.IS', 'BIMAS.IS', 'EKGYO.IS', 
                 'EREGL.IS', 'GARAN.IS', 'HEKTS.IS', 'ISCTR.IS', 'KCHOL.IS',
@@ -650,7 +591,6 @@ try:
                 'THYAO.IS', 'TOASO.IS', 'TUPRS.IS', 'VAKBN.IS', 'YKBNK.IS'
             ]
             
-            # Hisseleri 5'erli gruplara böl
             self.ticker_groups = [self.bist_tickers[i:i+5] for i in range(0, len(self.bist_tickers), 5)]
             
             print("Widget'lar oluşturuluyor...")
@@ -658,7 +598,6 @@ try:
             print("Veriler güncelleniyor...")
             self.update_data()
             
-            # Otomatik güncelleme başlat
             self.after(1000, self.check_update)
             print("Uygulama hazır!")
 
@@ -682,7 +621,6 @@ try:
             try:
                 all_data = []
                 
-                # Gruplar halinde veri çek
                 for group in self.ticker_groups:
                     try:
                         group_data = self.fetch_group_data(group)
@@ -696,7 +634,6 @@ try:
                     self.cached_data = all_data
                     self.last_update = datetime.now()
                     
-                    # Arayüzü güncelle
                     self.update_ui(all_data)
                     
                     self.status_var.set(f"Son Güncelleme: {self.last_update.strftime('%H:%M:%S')}")
@@ -716,7 +653,7 @@ try:
             for ticker in tickers:
                 try:
                     stock = yf.Ticker(ticker)
-                    info = stock.fast_info  # fast_info kullan
+                    info = stock.fast_info 
                     current_price = info.last_price
                     previous_close = info.previous_close
                     
@@ -727,7 +664,7 @@ try:
                             'price': current_price,
                             'change': round(change, 2),
                             'volume': info.last_volume,
-                            'bid': current_price * 0.999,  # Yaklaşık değerler
+                            'bid': current_price * 0.999,
                             'ask': current_price * 1.001
                         })
                 except Exception as e:
@@ -737,10 +674,8 @@ try:
 
         def update_ui(self, data):
             """Tüm arayüz güncellemelerini yap"""
-            # Mevcut güncellemeleri yap
             self.update_market_table(data)
             
-            # Yükselenler tablosu
             for i, stock in enumerate(data[:10]):
                 row = [
                     stock['symbol'],
@@ -750,7 +685,6 @@ try:
                 for j, value in enumerate(row):
                     self.gainers_tree.set(i, j, value)
             
-            # Düşenler tablosu
             for i, stock in enumerate(data[-10:]):
                 row = [
                     stock['symbol'],
@@ -764,19 +698,15 @@ try:
             container = ctk.CTkFrame(self)
             container.pack(fill="both", expand=True, padx=20, pady=20)
             
-            # Üst panel
             header_frame = ctk.CTkFrame(container)
             header_frame.pack(fill="x", pady=(0, 20))
             
-            # Başlık
             ctk.CTkLabel(header_frame, text="BIST Piyasa Takip",
                         font=("Segoe UI", 24, "bold")).pack(side="left")
             
-            # Karşılaştırma butonu
             ctk.CTkButton(header_frame, text="Hisse Karşılaştır",
                          command=self.show_compare_window).pack(side="left", padx=20)
             
-            # Arama çubuğu
             search_frame = ctk.CTkFrame(header_frame)
             search_frame.pack(side="right", pady=10)
             
@@ -787,38 +717,31 @@ try:
                                       width=200, placeholder_text="Hisse Ara...")
             search_entry.pack(side="left", padx=5)
             
-            # Durum çubuğu
             self.status_var = ctk.StringVar()
             ctk.CTkLabel(header_frame, textvariable=self.status_var,
                         font=("Segoe UI", 10)).pack(side="right", padx=20)
             
-            # Ana içerik
             content_frame = ctk.CTkFrame(container)
             content_frame.pack(fill="both", expand=True)
             
-            # Sol panel
             left_frame = ctk.CTkFrame(content_frame)
             left_frame.pack(side="left", fill="both", expand=True, padx=(0, 10))
             
             ctk.CTkLabel(left_frame, text="Tüm Piyasa",
                         font=("Segoe UI", 16, "bold")).pack(pady=(0, 10))
             
-            # Tablo frame
             table_frame = ctk.CTkFrame(left_frame)
             table_frame.pack(fill="both", expand=True)
             
-            # Tablo başlıkları
             columns = ('Hisse', 'Son', 'Değişim %', 'Hacim', 'Alış', 'Satış')
             self.market_tree = CustomTable(table_frame, rows=25, columns=6,
                                          headers=columns,
                                          on_row_click=self.on_market_row_click)
             self.market_tree.pack(fill="both", expand=True)
             
-            # Sağ panel
             right_frame = ctk.CTkFrame(content_frame)
             right_frame.pack(side="right", fill="both", padx=(10, 0))
             
-            # Yükselenler
             ctk.CTkLabel(right_frame, text="En Çok Yükselenler",
                         font=("Segoe UI", 16, "bold")).pack(pady=(0, 10))
             
@@ -828,7 +751,6 @@ try:
                                           on_row_click=self.on_gainer_row_click)
             self.gainers_tree.pack(fill="x", pady=(0, 20))
             
-            # Düşenler
             ctk.CTkLabel(right_frame, text="En Çok Düşenler",
                         font=("Segoe UI", 16, "bold")).pack(pady=(0, 10))
             
@@ -837,14 +759,12 @@ try:
                                          on_row_click=self.on_loser_row_click)
             self.losers_tree.pack(fill="x")
             
-            # Yenile butonu
             ctk.CTkButton(container, text="Verileri Yenile",
                          command=self.update_data).pack(pady=20)
 
         def filter_market_data(self, *args):
             search_term = self.search_var.get().upper()
             
-            # Clear all rows first
             for i in range(25):
                 for j in range(6):
                     self.market_tree.set(i, j, "")
@@ -858,7 +778,7 @@ try:
         
         def update_market_table(self, data):
             for i, stock in enumerate(data):
-                if i < 25:  # Maksimum 25 satır
+                if i < 25: 
                     row = [
                         stock['symbol'],
                         f"{stock['price']:.2f}",
@@ -871,14 +791,11 @@ try:
                         self.market_tree.set(i, j, value)
         
         def show_stock_analysis(self, symbol):
-            # Eğer pencere zaten açıksa, kapat
             if self.analysis_window is not None:
                 self.analysis_window.destroy()
             
-            # Yeni pencereyi aç
             self.analysis_window = StockAnalysisWindow(symbol)
             
-            # Pencere kapandığında referansı temizle
             self.analysis_window.protocol("WM_DELETE_WINDOW", self.on_analysis_window_close)
         
         def on_analysis_window_close(self):
