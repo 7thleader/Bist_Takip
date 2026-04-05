@@ -132,10 +132,4 @@ If the application doesn't work:
 - Keep the application updated regularly
 - Keep libraries up to date:
   pip install --upgrade customtkinter yfinance matplotlib
-
-8. Contact and Support
---------------------
-If you encounter any issues or need assistance:
-[Add your contact information here]
-
-Note: This application is for educational purposes and does not constitute financial advice. 
+ 
